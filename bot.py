@@ -33,9 +33,9 @@ bot = MyBot()
 target_voice_channel_id = None  # Will be set via command
 
 # Spotify setup
-# Initialize Spotify with environment variables
-client_id = os.getenv('SPOTIPY_CLIENT_ID') or os.getenv('SPOTIFY_CLIENT_ID')
-client_secret = os.getenv('SPOTIPY_CLIENT_SECRET') or os.getenv('SPOTIFY_CLIENT_SECRET')
+# Initialize Spotify with environment variables (trying both with and without RAILWAY_ prefix)
+client_id = os.getenv('SPOTIPY_CLIENT_ID') or os.getenv('RAILWAY_SPOTIPY_CLIENT_ID') or os.getenv('SPOTIFY_CLIENT_ID')
+client_secret = os.getenv('SPOTIPY_CLIENT_SECRET') or os.getenv('RAILWAY_SPOTIPY_CLIENT_SECRET') or os.getenv('SPOTIFY_CLIENT_SECRET')
 
 if not client_id or not client_secret:
     print("Warning: Spotify API credentials not found. Some features may not work.")
@@ -245,8 +245,8 @@ async def on_ready():
     print('------')
     await bot.add_cog(MusicBot(bot))
 
-# Get Discord token
-discord_token = os.getenv('DISCORD_TOKEN')
+# Get Discord token (try both with and without RAILWAY_ prefix)
+discord_token = os.getenv('DISCORD_TOKEN') or os.getenv('RAILWAY_DISCORD_TOKEN')
 if not discord_token:
     print("ERROR: No Discord token found. Please set the DISCORD_TOKEN environment variable.")
     print("You can get your token from: https://discord.com/developers/applications")
