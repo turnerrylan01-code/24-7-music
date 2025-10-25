@@ -33,17 +33,20 @@ bot = MyBot()
 target_voice_channel_id = None  # Will be set via command
 
 # Spotify setup
-# Initialize Spotify with environment variables or fall back to our custom ones
+# Initialize Spotify with environment variables
 client_id = os.getenv('SPOTIPY_CLIENT_ID') or os.getenv('SPOTIFY_CLIENT_ID')
 client_secret = os.getenv('SPOTIPY_CLIENT_SECRET') or os.getenv('SPOTIFY_CLIENT_SECRET')
 
 if not client_id or not client_secret:
-    raise ValueError("Missing Spotify API credentials. Please set SPOTIPY_CLIENT_ID and SPOTIPY_CLIENT_SECRET environment variables.")
-
-sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(
-    client_id=client_id,
-    client_secret=client_secret
-))
+    print("Warning: Spotify API credentials not found. Some features may not work.")
+    sp = None
+else:
+    # Initialize Spotify with client credentials flow (no redirect URI needed)
+    auth_manager = SpotifyClientCredentials(
+        client_id=client_id,
+        client_secret=client_secret
+    )
+    sp = spotipy.Spotify(auth_manager=auth_manager)
 
 # YTDL options
 ytdl_format_options = {
@@ -149,6 +152,10 @@ class MusicBot(commands.Cog):
                 self.current_song += 1
 
     async def load_spotify_playlist(self):
+        if not sp:
+            print("Spotify client not initialized. Please check your credentials.")
+            return False
+            
         try:
             results = sp.playlist_tracks(self.spotify_playlist_id)
             tracks = results['items']
