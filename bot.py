@@ -245,5 +245,17 @@ async def on_ready():
     print('------')
     await bot.add_cog(MusicBot(bot))
 
+# Get Discord token
+discord_token = os.getenv('DISCORD_TOKEN')
+if not discord_token:
+    print("ERROR: No Discord token found. Please set the DISCORD_TOKEN environment variable.")
+    print("You can get your token from: https://discord.com/developers/applications")
+    exit(1)
+
 # Run the bot
-bot.run(os.getenv('DISCORD_TOKEN'))
+print("Starting bot...")
+try:
+    bot.run(discord_token)
+except Exception as e:
+    print(f"Failed to start bot: {e}")
+    print("Please check your DISCORD_TOKEN and try again.")
