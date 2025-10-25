@@ -33,9 +33,16 @@ bot = MyBot()
 target_voice_channel_id = None  # Will be set via command
 
 # Spotify setup
+# Initialize Spotify with environment variables or fall back to our custom ones
+client_id = os.getenv('SPOTIPY_CLIENT_ID') or os.getenv('SPOTIFY_CLIENT_ID')
+client_secret = os.getenv('SPOTIPY_CLIENT_SECRET') or os.getenv('SPOTIFY_CLIENT_SECRET')
+
+if not client_id or not client_secret:
+    raise ValueError("Missing Spotify API credentials. Please set SPOTIPY_CLIENT_ID and SPOTIPY_CLIENT_SECRET environment variables.")
+
 sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(
-    client_id=os.getenv('SPOTIFY_CLIENT_ID'),
-    client_secret=os.getenv('SPOTIFY_CLIENT_SECRET')
+    client_id=client_id,
+    client_secret=client_secret
 ))
 
 # YTDL options
